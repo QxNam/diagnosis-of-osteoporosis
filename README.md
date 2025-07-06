@@ -20,15 +20,14 @@ Giao diện tương tác được triển khai bằng `Gradio` và hỗ trợ ch
 
 ## 🧠 Huấn luyện mô hình
 ### 1. Huấn luyện mô hình phân loại ResNet50 / VGG16
-
+- Để tạo ra data x3 và xử lý, đọc qua `notebook/process.ipynb`.
 - Notebook: `notebook\train_3_ROI_enhance.ipynb`
-- Dataset: Ảnh đã cắt sẵn ROI tự động từ YOLO và xử lý tăng cường. [Kaggle]()
-- Output: checkpoint `.pth` được lưu trong `checkpoints/`
+- Dataset: Ảnh đã cắt sẵn ROI tự động từ YOLO và xử lý tăng cường.
+- Output: checkpoint `.pth` được lưu trong [Drive](https://drive.google.com/drive/u/0/folders/13ytPRe5ovAv3Tm4Bz0cCIDNbKF8Fh7WC)
 
 ### 2. Huấn luyện mô hình phát hiện ROI (YOLOv8n)
 
-- Kết quả model `best.pt` nằm trong [Kaggle](https://drive.google.com/drive/u/0/folders/13ytPRe5ovAv3Tm4Bz0cCIDNbKF8Fh7WC)
-- Dùng dataset được label trên Roboflow [Kaggle]()
+- Kết quả model `best.pt` nằm trong [Drive](https://drive.google.com/drive/u/0/folders/1sKplzI4UfngL6dDQzxp2pBI0XbsC2W4P)
 ---
 
 ## 🖥️ Cách sử dụng
