@@ -1,0 +1,23 @@
+Time: 05-07-2025 17:58:43
+model: VGG16
+parameters: 134276034
+dir: training/vgg_entropy_adam
+num_epochs: 200
+run_epoch: 200
+learning_rate: 0.001
+optimizer_name: adam
+loss_name: crossentropy
+scheduler: ReduceLROnPlateau
+early_stopping_patience: 10
+early_stopping_delta: 0.001
+best_loss: 0.21077665698904435
+batch_size: 16
+train_images: 4809
+valid_images: 1030
+image_shape: torch.Size([1, 224, 224])
+device: cuda:0
+transform_image: True
+loss: CrossEntropy
+optimizer: Adam
+flag: vgg_entropy_adam
+dataset: ROI_enhance

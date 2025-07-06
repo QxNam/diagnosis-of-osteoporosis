@@ -1,0 +1,23 @@
+Time: 05-07-2025 09:07:14
+model: ResNet50
+parameters: 23505858
+dir: training/resnet_focal_adamw
+num_epochs: 200
+run_epoch: 200
+learning_rate: 0.001
+optimizer_name: adamw
+loss_name: focal
+scheduler: ReduceLROnPlateau
+early_stopping_patience: 10
+early_stopping_delta: 0.001
+best_loss: 0.015376801211752836
+batch_size: 16
+train_images: 4809
+valid_images: 1030
+image_shape: torch.Size([1, 224, 224])
+device: cuda:0
+transform_image: True
+loss: focal
+optimizer: Adamw
+focal_alpha: [0.4, 0.6]
+flag: resnet_focal_adamw

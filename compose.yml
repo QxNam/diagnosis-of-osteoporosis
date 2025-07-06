@@ -1,0 +1,31 @@
+services:
+  osteoporosis-app:
+    container_name: osteoporosis-app
+    build: .
+    image: osteoporosis-app
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./app:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest             
+    container_name: cloudflare-tunnel                
+    env_file:
+      - ./.env
+    command: tunnel run 
+    restart: always
+    healthcheck:
+      test: ["CMD", "cloudflared", "--version"]       
+      interval: 30s                                   
+      timeout: 10s                                   
+      retries: 3                                    
+      start_period: 10s       

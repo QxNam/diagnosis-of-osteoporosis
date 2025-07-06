@@ -1,0 +1,10 @@
+Time: 06-07-2025 09:30:20
+model: VGG16
+parameters: 134276034
+accuracy: 0.9312015503875969
+precision: 0.9226190476190477
+recall: 0.9356136820925554
+F1_Score: 0.929070929070929
+AUC: 0.9313582429154366
+test_images: 1032
+image_shape: torch.Size([1, 224, 224])

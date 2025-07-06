@@ -1,0 +1,22 @@
+Time: 06-07-2025 08:04:16
+model: VGG16
+parameters: 134276034
+dir: training/VGG16_focal_adamw_reducelronplateau
+num_epochs: 200
+run_epoch: 22
+learning_rate: 0.001
+optimizer_name: adamw
+loss_name: focal
+scheduler: ReduceLROnPlateau
+early_stopping_patience: 10
+early_stopping_delta: 0.001
+best_loss: 0.15780943261766897
+batch_size: 16
+train_images: 4809
+valid_images: 1030
+image_shape: torch.Size([1, 224, 224])
+device: cuda:0
+transform_image: True
+loss: Focal
+optimizer: Adamw
+dataset: ROI_enhance

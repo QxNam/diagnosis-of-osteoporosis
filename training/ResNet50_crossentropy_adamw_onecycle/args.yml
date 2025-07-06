@@ -1,0 +1,22 @@
+Time: 06-07-2025 10:01:12
+model: ResNet50
+parameters: 23505858
+dir: training/ResNet50_crossentropy_adamw_onecycle
+num_epochs: 156
+run_epoch: 200
+learning_rate: 0.0004001342945774
+optimizer_name: adamw
+loss_name: crossentropy
+scheduler: Onecycle
+early_stopping_patience: 10
+early_stopping_delta: 0.001
+best_loss: 0.11682390798294681
+batch_size: 16
+train_images: 4809
+valid_images: 1030
+image_shape: torch.Size([1, 224, 224])
+device: cuda:0
+transform_image: True
+loss: CrossEntropy
+optimizer: Adamw
+dataset: ROI_enhance

@@ -1,0 +1,13 @@
+__pycache__
+venv
+.venv
+data
+dataset
+models
+*.pth
+*.pt
+*.pem
+tmp*
+.env
+app/.gradio
+osteoporosis.v1i.yolov8
