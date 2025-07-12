@@ -25,7 +25,7 @@ if torch.cuda.is_available():
     device_id = 0
     if device_count > 1:
         try:
-            device_id = 0 # int(input("Chọn cuda: "))
+            device_id = int(input("Chọn cuda: "))
         except:
             device_id = 0
             print("Không hợp lệ, mặc định device_id = 0")
@@ -107,7 +107,7 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
     '''
     metadata = {}
 
-    num_epochs = kwargs.get("num_epochs", 100)
+    num_epochs = kwargs.get("num_epochs", 200)
     lr = kwargs.get("lr", 1e-3)
     early_stopping_patience = kwargs.get("early_stopping_patience", 10) 
     early_stopping_delta = kwargs.get("early_stopping_delta", 1e-3)  
@@ -160,7 +160,7 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
 
     flag = kwargs.get("flag", f"{model._get_name()}_{loss_name}_{optimizer_name}_{scheduler_name}") # {datetime.now().strftime('%Y%m%d_%H%M%S')}
     # Các đường dẫn thư mục
-    train_dir = "training"
+    train_dir = "training_seg"
     metadata_dir = os.path.join(train_dir, flag)
     os.makedirs(metadata_dir, exist_ok=True)
 
@@ -181,6 +181,7 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
         
     # Load last model nếu ở chế độ tiếp tục train
     index_start = 0
+    best_val_loss = float('inf')
     if resume and os.path.exists(last_model_path):
         print(f"🕹️ Continue training at {metadata_dir}")
         index_start = pd.read_csv(csv_path).shape[0]
@@ -188,11 +189,19 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
         print(f"🔁 Loaded checkpoint from {last_model_path}")
         df = pd.read_csv(csv_path)
         lr = float(df.iloc[-1]['learning_rate'])
+        # Load optimizer, best_val_loss, epoch nếu có
+        opt_ckpt_path = os.path.join(metadata_dir, 'optimizer_last.pth')
+        meta_ckpt_path = os.path.join(metadata_dir, 'train_meta_last.pth')
+        if os.path.exists(opt_ckpt_path):
+            optimizer.load_state_dict(torch.load(opt_ckpt_path))
+        if os.path.exists(meta_ckpt_path):
+            meta = torch.load(meta_ckpt_path)
+            best_val_loss = meta.get('best_val_loss', best_val_loss)
+            index_start = meta.get('epoch', index_start)
+            lr = meta.get('lr', lr)
     else:
         print(f"🚀 New training saved at: {best_model_path}")
 
-    best_val_loss = float('inf')
-    cur_epoch = 0
     # lưu args
     images, labels = next(iter(train_loader))
     metadata = {
@@ -201,7 +210,7 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
         "parameters": get_parameters(model),
         "dir": metadata_dir,
         "num_epochs": index_start+num_epochs,
-        "run_epoch": cur_epoch,
+        "run_epoch": index_start,
         "learning_rate": lr,
         "optimizer_name": optimizer_name,
         "loss_name": loss_name,
@@ -279,6 +288,9 @@ def train_model(model, train_loader, val_loader, resume=False, **kwargs):
 
         # Save weights
         torch.save(model.state_dict(), last_model_path)
+        # Save optimizer, best_val_loss, epoch, lr
+        torch.save(optimizer.state_dict(), os.path.join(metadata_dir, 'optimizer_last.pth'))
+        torch.save({'best_val_loss': best_val_loss, 'epoch': epoch+1, 'lr': lr}, os.path.join(metadata_dir, 'train_meta_last.pth'))
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             torch.save(model.state_dict(), best_model_path)

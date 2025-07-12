@@ -1,0 +1,23 @@
+Time: 09-07-2025 17:53:04
+model: VGG16
+parameters: 134276034
+dir: training_seg/VGG16_crossentropy_adamw_reducelronplateau
+num_epochs: 200
+run_epoch: 17
+learning_rate: 0.01
+optimizer_name: adamw
+loss_name: crossentropy
+scheduler: ReduceLROnPlateau
+early_stopping_patience: 10
+early_stopping_delta: 0.001
+best_loss: 0.692466500314694
+batch_size: 16
+train_images: 4809
+valid_images: 1030
+image_shape: torch.Size([1, 224, 224])
+device: cuda:1
+transform_image: True
+loss: CrossEntropy
+optimizer: Adamw
+dataset: seg_enhance
+lr: 0.01

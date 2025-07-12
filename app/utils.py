@@ -4,11 +4,11 @@ import numpy as np
 
 from models.resnet50 import ResNet50
 from models.vgg16 import VGG16
+from models.mask_rcnn import get_model_instance_segmentation
 import torch
 import torch.nn.functional as F
 from torchvision import transforms
-import cv2
-import numpy as np
+
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f'🚀 Use device: {device}')
@@ -29,6 +29,9 @@ model_cls = {
     "vgg16": vgg16_model
 }
 model_roi = YOLO("weights/best.pt")
+model_seg = get_model_instance_segmentation(num_classes=2)  # 1 class (object) + background
+model_seg.load_state_dict(torch.load("weights/maskrcnn_best.pth", map_location=device))
+model_seg.eval()
 
 def extract_roi(image, conf_threshold=0.3, max_rois=2):
     '''Hàm trích xuất hình ảnh ROI'''
@@ -109,3 +112,29 @@ def predict_cls(model_name, roi_images):
         transformed_images_cv2.append(img_np)
 
     return predictions, transformed_images_cv2
+
+def segment_roi(img_rgb):
+    img_tensor = torch.as_tensor(img_rgb, dtype=torch.float32).permute(2, 0, 1) / 255.0
+    img_tensor = img_tensor.unsqueeze(0)
+
+    # Predict
+    with torch.no_grad():
+        prediction = model_seg(img_tensor)
+
+    # Visualize
+    masks = prediction[0]['masks']
+    scores = prediction[0]['scores']
+
+    img_show = img_rgb.copy()
+    # Tạo một mask tổng hợp
+    combined_mask = np.zeros(img_show.shape[:2], dtype=bool)
+
+    for i in range(len(masks)):
+        if scores[i] > 0.5:
+            mask = masks[i, 0].cpu().numpy()
+            combined_mask = np.logical_or(combined_mask, mask > 0.5)
+
+    img_masked = img_rgb.copy()
+    # Đặt ngoài vùng mask về đen
+    img_masked[~combined_mask] = 0
+    return img_masked

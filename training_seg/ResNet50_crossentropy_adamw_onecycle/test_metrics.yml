@@ -1,0 +1,10 @@
+Time: 09-07-2025 13:37:11
+model: ResNet50
+parameters: 23505858
+accuracy: 0.936046511627907
+precision: 0.9480249480249481
+recall: 0.9175050301810865
+F1_Score: 0.9325153374233128
+AUC: 0.9353880291092348
+test_images: 1032
+image_shape: torch.Size([1, 224, 224])

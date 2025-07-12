@@ -1,14 +1,14 @@
 import gradio as gr
 import numpy as np
-from utils import enhance_xray, extract_roi, predict_cls
+from utils import enhance_xray, extract_roi, predict_cls, segment_roi
 import cv2
 
 def process_and_classify(raw_image: np.ndarray, processing_mode: str, model_choice: str):
     if raw_image is None:
         return None, None, None, "Vui lòng tải ảnh lên để bắt đầu."
 
-    if processing_mode != "ROI Extract":
-        return raw_image, raw_image, raw_image, "Chỉ hỗ trợ Simple ROI trong phiên bản này."
+    # if processing_mode != "ROI Extract":
+    #     return raw_image, raw_image, raw_image, "Chỉ hỗ trợ Simple ROI trong phiên bản này."
 
     # Trích xuất ROI
     rois_draw, rois = extract_roi(image=raw_image)
@@ -18,6 +18,8 @@ def process_and_classify(raw_image: np.ndarray, processing_mode: str, model_choi
     # Tăng cường ảnh
     enhanceds = []
     for roi in rois:
+        if processing_mode.lower() == "segment":
+            roi = segment_roi(roi)
         if not isinstance(roi, np.ndarray):
             roi = np.array(roi)
         if len(roi.shape) == 3 and roi.shape[2] == 3:
@@ -60,7 +62,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Phân loại ảnh X-quang") as ap
             input_image = gr.Image(type="numpy", label="Ảnh X-quang đầu vào")
             
             mode_selector = gr.Dropdown(
-                choices=["ROI Extract"],
+                choices=["ROI Extract", "Segment"],
                 value="ROI Extract",
                 label="Chọn Chế độ Xử lý"
             )
@@ -116,5 +118,5 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Phân loại ảnh X-quang") as ap
     )
 
 if __name__ == "__main__":
-    app.launch(server_name="0.0.0.0", server_port=7860, debug=True)
+    app.launch(server_name="0.0.0.0", server_port=7860, debug=True, share=True)
     # share=True : thêm param này nếu muốn chạy https người khác có thể truy cập trong 1 tuần

@@ -73,3 +73,6 @@ Cách 2: sử dụng docker
 ```
 
 truy cập đường dẫn: [localhost:7860](http://localhost:7860/)
+
+![demo](assets/demo.png)
+

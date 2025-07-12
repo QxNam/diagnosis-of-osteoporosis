@@ -11,3 +11,4 @@ tmp*
 .env
 app/.gradio
 osteoporosis.v1i.yolov8
+osteoporosis_segmentation-2
